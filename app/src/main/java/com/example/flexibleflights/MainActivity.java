@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         final String url = "http://54.147.221.40:3000";
         final String postUrl = "http://54.147.221.40:3000/postdata";
 
-        testConnection(RequestText, url);
+        //testConnection(RequestText, url);
 
         queue.start();
 
@@ -99,7 +99,12 @@ public class MainActivity extends AppCompatActivity {
                 });
                 queue.add(jsObjRequest);
                 */
-                testPostConnection(postUrl, RequestText);
+                //testPostConnection(url, RequestText);
+                try {
+                    JsonTest(postUrl, RequestText);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -177,26 +182,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
 //TODO - fix JSON object passing, above function can read out but does not properly pass
-    public void JsonTest(String url, TextView textView) throws JSONException {
+    public void JsonTest(String url,TextView textView) throws JSONException {
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        JSONObject jsonParams = new JSONObject();
-        jsonParams.put("name", "Sean");
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonParams, new Response.Listener<JSONObject>() {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("name", "Sean");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 // on below line we are parsing the response
                 // to json object to extract data from it.
-                JSONObject respObj = new JSONObject((Map) response);
+                // on below line we are parsing the response
+                // to json object to extract data from it.
+                ;
 
                 // below are the strings which we
                 // extract from our json object.
                 String message = null;
                 try {
-                    message = respObj.getString("message");
+                    message = response.getString("message");
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+
+                // on below line we are setting this string s to our text view.
+                textView.setText(message);
+
+                // below are the strings which we
+                // extract from our json object.
+
+
 
                 // on below line we are setting this string s to our text view.
                 textView.setText(message);
@@ -204,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                textView.setText(error.toString());
             }
         });
         queue.add(jsonObjectRequest);
