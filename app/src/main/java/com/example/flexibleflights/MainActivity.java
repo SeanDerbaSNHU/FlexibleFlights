@@ -10,6 +10,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -61,8 +62,14 @@ public class MainActivity extends AppCompatActivity {
         //Node.js server handling
         ////
         final RequestQueue queue = Volley.newRequestQueue(this);
-        final String url = "http://10.32.6.61:3000";
+        final String url = "http://54.172.240.154:3000";
+
+        testConnection(RequestText, url);
+
         queue.start();
+
+
+        /*
         RequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,5 +97,27 @@ public class MainActivity extends AppCompatActivity {
                 queue.add(jsObjRequest);
             }
         });
+        */
     }
+
+    public void testConnection(TextView textView, String url){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        //String url = "http://54.172.240.154:3000/";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        textView.setText("Connection established!");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText(error.toString());
+            }
+        });
+        queue.add(stringRequest);
+    }
+
 }
