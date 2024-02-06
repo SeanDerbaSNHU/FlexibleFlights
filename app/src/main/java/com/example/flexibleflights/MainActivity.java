@@ -24,8 +24,10 @@ import com.example.flexibleflights.databinding.ActivityMainBinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -62,20 +64,21 @@ public class MainActivity extends AppCompatActivity {
         //Node.js server handling
         ////
         final RequestQueue queue = Volley.newRequestQueue(this);
-        final String url = "http://54.172.240.154:3000";
+        final String url = "http://54.147.221.40:3000";
+        final String postUrl = "http://54.147.221.40:3000/postdata";
 
         testConnection(RequestText, url);
 
         queue.start();
 
 
-        /*
+
         RequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HashMap<String, String> params = new HashMap<String,String>(); //JSON object to be passed to Node.js
-                params.put("data", "test"); //(title), (data)
-
+                //HashMap<String, String> params = new HashMap<String,String>(); //JSON object to be passed to Node.js
+                //params.put("data", "test"); //(title), (data)
+                /*
                 JsonObjectRequest jsObjRequest = new
                         JsonObjectRequest(Request.Method.POST, url,
                         new JSONObject(params),
@@ -91,13 +94,15 @@ public class MainActivity extends AppCompatActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        RequestText.setText("That didn't work!");
+                        RequestText.setText(error.toString());
                     }
                 });
                 queue.add(jsObjRequest);
+                */
+                testPostConnection(postUrl, RequestText);
             }
         });
-        */
+
     }
 
     public void testConnection(TextView textView, String url){
@@ -118,6 +123,91 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         queue.add(stringRequest);
+    }
+
+    public void testPostConnection(String url, TextView textView){
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        // on below line we are calling a string
+        // request method to post the data to our API
+        // in this we are calling a post method.
+        StringRequest request = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    // on below line we are parsing the response
+                    // to json object to extract data from it.
+                    JSONObject respObj = new JSONObject(response);
+
+                    // below are the strings which we
+                    // extract from our json object.
+                    String message = respObj.getString("message");
+
+                    // on below line we are setting this string s to our text view.
+                    textView.setText(message);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // method to handle errors.
+                textView.setText(error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // below line we are creating a map for
+                // storing our values in key and value pair.
+                Map<String, String> params = new HashMap<String, String>();
+
+                // on below line we are passing our key
+                // and value pair to our parameters.
+                params.put("name", "sean");
+
+                // at last we are
+                // returning our params.
+                return params;
+            }
+        };
+
+        queue.add(request);
+    }
+
+//TODO - fix JSON object passing, above function can read out but does not properly pass
+    public void JsonTest(String url, TextView textView) throws JSONException {
+
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        JSONObject jsonParams = new JSONObject();
+        jsonParams.put("name", "Sean");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonParams, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                // on below line we are parsing the response
+                // to json object to extract data from it.
+                JSONObject respObj = new JSONObject((Map) response);
+
+                // below are the strings which we
+                // extract from our json object.
+                String message = null;
+                try {
+                    message = respObj.getString("message");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // on below line we are setting this string s to our text view.
+                textView.setText(message);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(jsonObjectRequest);
     }
 
 }
