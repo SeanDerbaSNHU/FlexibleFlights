@@ -3,6 +3,7 @@ package com.example.flexibleflights;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -32,7 +33,13 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     Button RequestButton;
+    Button LoginButton;
+    Button RegisterButton;
     TextView RequestText;
+    TextView LoginResultsText;
+    EditText UsernameEditText;
+    EditText PasswordEditText;
+
     private ActivityMainBinding binding;
 
 
@@ -60,12 +67,20 @@ public class MainActivity extends AppCompatActivity {
         RequestButton = (Button) findViewById(R.id.requestButton);
         RequestText = findViewById(R.id.requestText);
 
+        //Login test vars
+        LoginButton = (Button) findViewById(R.id.buttonLogin);
+        RegisterButton = (Button) findViewById(R.id.buttonRegister);
+        LoginResultsText = findViewById(R.id.textViewLogin);
+        UsernameEditText = findViewById(R.id.editTextUsername);
+        PasswordEditText = findViewById(R.id.editTextPassword);
+
         ////
         //Node.js server handling
         ////
         final RequestQueue queue = Volley.newRequestQueue(this);
-        final String url = "http://54.147.221.40:3000";
-        final String postUrl = "http://54.147.221.40:3000/postdata";
+        final String url = "http://44.220.135.168:3000";                     //TODO Make sure url is matching EC2 instance ip, it may change on reboot
+        final String postUrl = url + "/postdata";
+        //final String postUrl = "http://172.31.25.139:3000/postdata";
 
         //testConnection(RequestText, url);
 
@@ -108,11 +123,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        LoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                login((url + "/login"), UsernameEditText.getText().toString(), PasswordEditText.getText().toString(), LoginResultsText);
+                UsernameEditText.setText("");
+                PasswordEditText.setText("");
+            }
+        });
+
+        RegisterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                login((url + "/register"), UsernameEditText.getText().toString(), PasswordEditText.getText().toString(), LoginResultsText);
+                UsernameEditText.setText("");
+                PasswordEditText.setText("");
+            }
+        });
+
     }
 
     public void testConnection(TextView textView, String url){
         RequestQueue queue = Volley.newRequestQueue(this);
-        //String url = "http://54.172.240.154:3000/";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -181,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-//TODO - fix JSON object passing, above function can read out but does not properly pass
+
     public void JsonTest(String url,TextView textView) throws JSONException {
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
@@ -190,12 +222,6 @@ public class MainActivity extends AppCompatActivity {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                // on below line we are parsing the response
-                // to json object to extract data from it.
-                // on below line we are parsing the response
-                // to json object to extract data from it.
-                ;
-
                 // below are the strings which we
                 // extract from our json object.
                 String message = null;
@@ -204,14 +230,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
-                // on below line we are setting this string s to our text view.
-                textView.setText(message);
-
-                // below are the strings which we
-                // extract from our json object.
-
-
 
                 // on below line we are setting this string s to our text view.
                 textView.setText(message);
@@ -224,5 +242,36 @@ public class MainActivity extends AppCompatActivity {
         });
         queue.add(jsonObjectRequest);
     }
+
+    public void login(String url, String username, String password, TextView textView){
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("username", username);
+        params.put("password", password);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                // below are the strings which we
+                // extract from our json object.
+                String message = null;
+                try {
+                    message = response.getString("message");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // on below line we are setting this string s to our text view.
+                textView.setText(message);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText("Error log in");
+            }
+        });
+        queue.add(jsonObjectRequest);
+    }
+
+
 
 }
