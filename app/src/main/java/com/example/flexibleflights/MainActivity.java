@@ -6,6 +6,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -13,19 +19,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.example.flexibleflights.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     EditText UsernameEditText;
     EditText PasswordEditText;
 
-    private ActivityMainBinding binding;
+     private ActivityMainBinding binding;
 
 
     @Override
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         //Node.js server handling
         ////
         final RequestQueue queue = Volley.newRequestQueue(this);
-        final String url = "http://44.220.135.168:3000";                     //TODO Make sure url is matching EC2 instance ip, it may change on reboot
+        final String url = "http://54.163.192.205:3000";                     //TODO Make sure url is matching EC2 instance ip, it may change on reboot
         final String postUrl = url + "/postdata";
         //final String postUrl = "http://172.31.25.139:3000/postdata";
 
