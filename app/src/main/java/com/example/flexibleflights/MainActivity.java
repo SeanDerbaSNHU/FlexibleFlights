@@ -1,10 +1,17 @@
 package com.example.flexibleflights;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -13,19 +20,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.example.flexibleflights.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     EditText UsernameEditText;
     EditText PasswordEditText;
 
-    private ActivityMainBinding binding;
+     private ActivityMainBinding binding;
 
 
     @Override
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         //Node.js server handling
         ////
         final RequestQueue queue = Volley.newRequestQueue(this);
-        final String url = "http://44.220.135.168:3000";                     //TODO Make sure url is matching EC2 instance PUBLIC ip, it may change on reboot
+        final String url = "http://54.163.192.205:3000";                     //TODO Make sure url is matching EC2 instance ip, it may change on reboot
         final String postUrl = url + "/postdata";
         //final String postUrl = "http://172.31.25.139:3000/postdata";
 
@@ -91,35 +90,12 @@ public class MainActivity extends AppCompatActivity {
         RequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //HashMap<String, String> params = new HashMap<String,String>(); //JSON object to be passed to Node.js
-                //params.put("data", "test"); //(title), (data)
-                /*
-                JsonObjectRequest jsObjRequest = new
-                        JsonObjectRequest(Request.Method.POST, url,
-                        new JSONObject(params),
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    RequestText.setText(response.getString("message"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        RequestText.setText(error.toString());
-                    }
-                });
-                queue.add(jsObjRequest);
-                */
-                //testPostConnection(url, RequestText);
-                try {
-                    JsonTest(postUrl, RequestText);
+                /*try {
+                    JsonTest((url + "/search"));
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
-                }
+                }*/
+                startActivity(new Intent(MainActivity.this, RecyclerViewActivity.class));
             }
         });
 
@@ -214,11 +190,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void JsonTest(String url,TextView textView) throws JSONException {
+    public void JsonTest(String url) throws JSONException {
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("name", "Sean");
+        params.put("origin", "LHR");
+        params.put("destination", "JFK");
+        params.put("departure_date", "2024-03-01");
+        params.put("cabin_class", "economy");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -230,14 +209,11 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
-                // on below line we are setting this string s to our text view.
-                textView.setText(message);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                textView.setText(error.toString());
+
             }
         });
         queue.add(jsonObjectRequest);
