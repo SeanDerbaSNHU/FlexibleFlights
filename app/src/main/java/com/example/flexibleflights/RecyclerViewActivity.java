@@ -38,6 +38,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+        items = makeDummyList();
         /////
         //RecyclerView
         /////
@@ -49,10 +50,9 @@ public class RecyclerViewActivity extends AppCompatActivity {
     public List<Item> makeDummyList(){
         List<Item> items = new ArrayList<Item>();
 
-        for(int i = 0; i < 3; i++){
-            items.add(new Item(valueOf(i)));
+        for(int i = 0; i < 20; i++){
+            items.add(new Item(("Test" + valueOf(i))));
         }
-        items.add(new Item("test"));
 
         return items;
     }
@@ -78,19 +78,16 @@ public class RecyclerViewActivity extends AppCompatActivity {
                 // extract from our json object.
                 Log.d("RESPONSE", response.toString());
                 try {
-                    response.getJSONObject("offers");
-
+                   JSONArray offers = response.getJSONArray("offers");
+                    for (int i = 0; i < offers.length(); i++){
+                        JSONObject object = offers.getJSONObject(i);
+                        items.add(makeItem(object));
+                        Log.d("ITEMS", valueOf(items.size()));
+                    }
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                for (int i = 0; i < items.size(); i++){
-//                    try {
-//                        //items.add(makeItem(response.getJSONObject(i)));
-//                        Log.d("ITEMS", valueOf(items.size()));
-//                    } catch (JSONException e) {
-//                        throw new RuntimeException(e);
-//                    }
-                }
+
 
             }
         }, new Response.ErrorListener() {
@@ -105,7 +102,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
 public Item makeItem(JSONObject object) throws JSONException {
         //Fetch necessary nested JSON objects
-        JSONObject slices = object.getJSONObject("slices");
+
+        JSONObject slices = object.getJSONArray("slices").getJSONObject(0);
         JSONObject origin = slices.getJSONObject("origin");
         JSONObject owner = object.getJSONObject("owner");
         JSONObject segments = slices.getJSONObject("segments");
