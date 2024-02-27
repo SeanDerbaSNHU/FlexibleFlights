@@ -1,5 +1,6 @@
 package com.example.flexibleflights;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -89,35 +90,7 @@ public class MainActivity extends AppCompatActivity {
         RequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //HashMap<String, String> params = new HashMap<String,String>(); //JSON object to be passed to Node.js
-                //params.put("data", "test"); //(title), (data)
-                /*
-                JsonObjectRequest jsObjRequest = new
-                        JsonObjectRequest(Request.Method.POST, url,
-                        new JSONObject(params),
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    RequestText.setText(response.getString("message"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        RequestText.setText(error.toString());
-                    }
-                });
-                queue.add(jsObjRequest);
-                */
-                //testPostConnection(url, RequestText);
-                try {
-                    JsonTest(postUrl, RequestText);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                startActivity(new Intent(MainActivity.this, RecyclerViewActivity.class));
             }
         });
 
