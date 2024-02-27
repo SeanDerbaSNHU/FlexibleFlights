@@ -90,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
         RequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*try {
+                    JsonTest((url + "/search"));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }*/
                 startActivity(new Intent(MainActivity.this, RecyclerViewActivity.class));
             }
         });
@@ -185,11 +190,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void JsonTest(String url,TextView textView) throws JSONException {
+    public void JsonTest(String url) throws JSONException {
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("name", "Sean");
+        params.put("origin", "LHR");
+        params.put("destination", "JFK");
+        params.put("departure_date", "2024-03-01");
+        params.put("cabin_class", "economy");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -201,14 +209,11 @@ public class MainActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
-                // on below line we are setting this string s to our text view.
-                textView.setText(message);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                textView.setText(error.toString());
+
             }
         });
         queue.add(jsonObjectRequest);
