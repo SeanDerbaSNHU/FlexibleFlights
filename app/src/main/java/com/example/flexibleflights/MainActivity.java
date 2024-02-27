@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         //Node.js server handling
         ////
         final RequestQueue queue = Volley.newRequestQueue(this);
-        final String url = "http://44.220.135.168:3000";                     //TODO Make sure url is matching EC2 instance ip, it may change on reboot
+        final String url = "http://44.220.135.168:3000";                     //TODO Make sure url is matching EC2 instance PUBLIC ip, it may change on reboot
         final String postUrl = url + "/postdata";
         //final String postUrl = "http://172.31.25.139:3000/postdata";
 
