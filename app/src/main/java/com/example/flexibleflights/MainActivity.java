@@ -63,15 +63,9 @@ public class MainActivity extends AppCompatActivity {
         ////
         //Assigning layout vars
         ////
-        RequestButton = (Button) findViewById(R.id.requestButton);
-        RequestText = findViewById(R.id.requestText);
 
-        //Login test vars
-        LoginButton = (Button) findViewById(R.id.buttonLogin);
-        RegisterButton = (Button) findViewById(R.id.buttonRegister);
-        LoginResultsText = findViewById(R.id.textViewLogin);
-        UsernameEditText = findViewById(R.id.editTextUsername);
-        PasswordEditText = findViewById(R.id.editTextPassword);
+        
+        //Nothing currently
 
         ////
         //Node.js server handling
