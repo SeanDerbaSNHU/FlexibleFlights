@@ -1,8 +1,6 @@
 package com.example.flexibleflights;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         //Assigning layout vars
         ////
 
-        
+
         //Nothing currently
 
         ////
@@ -81,35 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        RequestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*try {
-                    JsonTest((url + "/search"));
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }*/
-                startActivity(new Intent(MainActivity.this, RecyclerViewActivity.class));
-            }
-        });
 
-        LoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login((url + "/login"), UsernameEditText.getText().toString(), PasswordEditText.getText().toString(), LoginResultsText);
-                UsernameEditText.setText("");
-                PasswordEditText.setText("");
-            }
-        });
 
-        RegisterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                login((url + "/register"), UsernameEditText.getText().toString(), PasswordEditText.getText().toString(), LoginResultsText);
-                UsernameEditText.setText("");
-                PasswordEditText.setText("");
-            }
-        });
 
     }
 

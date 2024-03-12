@@ -44,7 +44,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         /////
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new MyAdapter(getApplicationContext(), items));
+        recyclerView.setAdapter(new MyAdapter(items));
     }
 
     public List<Item> makeDummyList(){
@@ -65,7 +65,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         try {
             jsonParam.put("origin", "LHR");
             jsonParam.put("destination", "JFK");
-            jsonParam.put("departure_date", "2024-03-01");
+            jsonParam.put("departure_date", "2024-03-22");
             jsonParam.put("cabin_class", "economy");
         } catch (JSONException e){
             e.printStackTrace();
