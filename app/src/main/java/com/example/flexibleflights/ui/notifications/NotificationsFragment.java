@@ -95,7 +95,12 @@ public class NotificationsFragment extends Fragment {
                                                   int month, int day) {
                                 // on below line we are setting date to our text view.
                                 month++; //Month returns month-1 for some reason, this fixes it
-                                date.setText(year + "-" + (month) + "-" + day);
+                                if(month > 9) {
+                                    date.setText(year + "-" + (month) + "-" + day);
+                                }
+                                else{
+                                    date.setText(year + "-0" + (month) + "-" + day);
+                                }
 
                             }
                         },
@@ -185,15 +190,23 @@ public class NotificationsFragment extends Fragment {
                 HashMap<String, String> params = new HashMap<String, String>();
                 JSONArray array = new JSONArray();
                 JSONObject jsonParam = new JSONObject();
+                JSONObject paramPassenger = new JSONObject();
                 try {
                     jsonParam.put("origin", "LHR");
                     jsonParam.put("destination", "JFK");
                     jsonParam.put("departure_date", "2024-03-22");
                     jsonParam.put("cabin_class", "economy");
+                    paramPassenger.put("type", "adult");
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
+
+                JSONArray listPassengers = new JSONArray();
+                for(int i = 0; i < Integer.valueOf((String) passengers.getText()); i++){
+                    listPassengers.put(paramPassenger);
+                }
                 array.put(jsonParam);
+                array.put(listPassengers);
 
                 JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, url, array, new Response.Listener<JSONArray>() {
                     @Override

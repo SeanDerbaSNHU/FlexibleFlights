@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -142,6 +143,7 @@ public class DashboardFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("HELP", "Button pushed");
                 RequestQueue queue = Volley.newRequestQueue(root.getContext());
                 HashMap<String, String> params = new HashMap<String, String>();
                 JSONArray array = new JSONArray();
@@ -174,10 +176,14 @@ public class DashboardFragment extends Fragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Log.e("Error", error.toString());
+//                        throw new RuntimeException(error);
                     }
                 });
-                //JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, url, array, )
+                jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        50000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 queue.add(jsonArrayRequest);
             }
         });
