@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +21,31 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.flexibleflights.Item;
 import com.example.flexibleflights.MyAdapter;
 import com.example.flexibleflights.R;
 import com.example.flexibleflights.databinding.FragmentDashboardBinding;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 public class DashboardFragment extends Fragment {
 
     private FragmentDashboardBinding binding;
     List<Item> items = new ArrayList<Item>();
+    final String url = "http://54.163.192.205:3000/search";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,14 +60,16 @@ public class DashboardFragment extends Fragment {
         /////
         Button date = root.findViewById(R.id.buttonDate);
         Button passengers = root.findViewById(R.id.buttonNumPassengers);
+        Button search = root.findViewById(R.id.buttonSearch);
 
         /////
         //RecyclerView
         /////
-        items = makeDummyList();
+        //items = makeDummyList();
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new MyAdapter(items));
+
 
         date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +139,48 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RequestQueue queue = Volley.newRequestQueue(root.getContext());
+                HashMap<String, String> params = new HashMap<String, String>();
+                JSONArray array = new JSONArray();
+                JSONObject jsonParam = new JSONObject();
+                try {
+                    jsonParam.put("origin", "LHR");
+                    jsonParam.put("destination", "JFK");
+                    jsonParam.put("departure_date", "2024-03-22");
+                    jsonParam.put("cabin_class", "economy");
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+                array.put(jsonParam);
 
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, url, array, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("RESPONSE", response.toString());
+                        for(int i = 0; i < response.length(); i++){
+                            try {
+                                JSONObject object = response.getJSONObject(i);
+                                items.add(makeItem(object));
+                                Log.d("ITEMS", valueOf(items.size()));
+                                recyclerView.getAdapter().notifyDataSetChanged();
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+                //JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, url, array, )
+                queue.add(jsonArrayRequest);
+            }
+        });
 
         return root;
     }
@@ -144,6 +200,30 @@ public class DashboardFragment extends Fragment {
         }
 
         return items;
+    }
+
+    public Item makeItem(JSONObject object) throws JSONException {
+        //Fetch necessary nested JSON objects
+
+        JSONObject slices = object.getJSONArray("slices").getJSONObject(0);
+        JSONObject origin = slices.getJSONObject("origin");
+        JSONObject owner = object.getJSONObject("owner");
+        JSONObject segments = slices.getJSONArray("segments").getJSONObject(0);
+        JSONObject aircraft = segments.getJSONObject("aircraft");
+        JSONObject destination = slices.getJSONObject("destination");
+
+        //Get necessary variables from JSON
+        String price = object.getString("total_amount");
+        String currency = object.getString("total_currency");
+        String name = owner.getString("name");
+        String total_emissions = object.getString("total_emissions_kg");
+        String originName = origin.getString("city_name");
+        String destinationName = destination.getString("city_name");
+        String aircraftName = aircraft.getString("name");
+
+        //Make and return Item object
+        Item item = new Item(price, currency, name, total_emissions, aircraftName, destinationName, originName);
+        return item;
     }
 
     @Override
