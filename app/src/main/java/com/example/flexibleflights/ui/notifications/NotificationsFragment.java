@@ -5,6 +5,7 @@ import static java.lang.String.valueOf;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.flexibleflights.AirportModel;
 import com.example.flexibleflights.Item;
 import com.example.flexibleflights.MyAdapter;
 import com.example.flexibleflights.R;
@@ -35,10 +37,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
+
+import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.SearchResultListener;
 
 public class NotificationsFragment extends Fragment {
 
@@ -61,6 +69,8 @@ public class NotificationsFragment extends Fragment {
         Button date2 = root.findViewById(R.id.buttonDate3);
         Button passengers = root.findViewById(R.id.buttonNumPassengers2);
         Button search = root.findViewById(R.id.buttonSearch2);
+        Button orgin = root.findViewById(R.id.buttonOrgin2);
+        Button destination = root.findViewById(R.id.buttonDestination2);
 
         /////
         //RecyclerView
@@ -234,6 +244,28 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
+        orgin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    getAirport(orgin, root);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        destination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    getAirport(destination, root);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         return root;
     }
 
@@ -274,5 +306,29 @@ public class NotificationsFragment extends Fragment {
         //Make and return Item object
         Item item = new Item(price, currency, name, total_emissions, aircraftName, destinationName, originName);
         return item;
+    }
+    public ArrayList<AirportModel> createAirportList() throws IOException {
+        ArrayList<AirportModel> result = new ArrayList<>();
+        AssetManager assets = this.getContext().getAssets();
+        String path = this.getContext().getFilesDir().getAbsolutePath();
+        //File file = new File(path + "/app/src/main/java/airports.txt");
+        try (Scanner s = new Scanner(assets.open("airports.txt"))){
+            while(s.hasNext()){
+                result.add(new AirportModel(s.nextLine()));
+            }
+        }
+        return result;
+    }
+
+    public void getAirport(Button button, View root) throws IOException {
+
+        new SimpleSearchDialogCompat<AirportModel>(root.getContext(), "Search...", "What are you looking for?", null, createAirportList(), new SearchResultListener<AirportModel>() {
+            @Override
+            public void onSelected(BaseSearchDialogCompat dialog, AirportModel item, int position) {
+                // If filtering is enabled, [position] is the index of the item in the filtered result, not in the unfiltered source
+                button.setText(item.getIATA());
+                dialog.dismiss();
+            }
+        }).show();
     }
 }

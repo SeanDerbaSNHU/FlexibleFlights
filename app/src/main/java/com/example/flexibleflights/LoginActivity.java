@@ -50,9 +50,9 @@ public class LoginActivity extends AppCompatActivity {
         //
         //Establishing Node.js server connection
         //
-        final RequestQueue queue = Volley.newRequestQueue(this);
+        //final RequestQueue queue = Volley.newRequestQueue(this);
         final String url = "http://54.163.192.205:3000";                     //TODO Make sure url is matching EC2 instance ip, it may change on reboot
-        queue.start();
+        //queue.start();
 
 
         /*loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {

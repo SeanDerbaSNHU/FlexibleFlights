@@ -6,6 +6,7 @@ import static java.lang.String.valueOf;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.flexibleflights.AirportModel;
 import com.example.flexibleflights.Item;
 import com.example.flexibleflights.MyAdapter;
 import com.example.flexibleflights.R;
@@ -37,9 +39,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Scanner;
+
+import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.SearchResultListener;
 
 public class DashboardFragment extends Fragment {
 
@@ -61,6 +69,8 @@ public class DashboardFragment extends Fragment {
         Button date = root.findViewById(R.id.buttonDate);
         Button passengers = root.findViewById(R.id.buttonNumPassengers);
         Button search = root.findViewById(R.id.buttonSearch);
+        Button orgin = root.findViewById(R.id.buttonOrgin);
+        Button destination = root.findViewById(R.id.buttonDestination);
 
         /////
         //RecyclerView
@@ -153,8 +163,8 @@ public class DashboardFragment extends Fragment {
                 JSONObject jsonParam = new JSONObject();
                 JSONObject paramPassenger = new JSONObject();
                 try {
-                    jsonParam.put("origin", "LHR");
-                    jsonParam.put("destination", "JFK");
+                    jsonParam.put("origin", orgin.getText());
+                    jsonParam.put("destination", destination.getText());
                     jsonParam.put("departure_date", date.getText());
                     jsonParam.put("cabin_class", "economy");
                     paramPassenger.put("type", "adult");
@@ -199,8 +209,32 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+        orgin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    getAirport(orgin, root);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        destination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    getAirport(destination, root);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         return root;
     }
+
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState)
@@ -237,15 +271,50 @@ public class DashboardFragment extends Fragment {
         String originName = origin.getString("city_name");
         String destinationName = destination.getString("city_name");
         String aircraftName = aircraft.getString("name");
+        String arrivalTime = segments.getString("arriving_at");
+        String departTime = segments.getString("departing_at");
+        String durationTime = slices.getString("duration");
 
         //Make and return Item object
         Item item = new Item(price, currency, name, total_emissions, aircraftName, destinationName, originName);
+        item.setArrive_time(arrivalTime);
+        item.setDepart_time(departTime);
+        item.setDuration(durationTime);
         return item;
     }
+
+    public ArrayList<AirportModel> createAirportList() throws IOException {
+        ArrayList<AirportModel> result = new ArrayList<>();
+        AssetManager assets = this.getContext().getAssets();
+        String path = this.getContext().getFilesDir().getAbsolutePath();
+        //File file = new File(path + "/app/src/main/java/airports.txt");
+        try (Scanner s = new Scanner(assets.open("airports.txt"))){
+            while(s.hasNext()){
+                result.add(new AirportModel(s.nextLine()));
+            }
+        }
+        return result;
+    }
+
+    public void getAirport(Button button, View root) throws IOException {
+
+        new SimpleSearchDialogCompat<AirportModel>(root.getContext(), "Search...", "What are you looking for?", null, createAirportList(), new SearchResultListener<AirportModel>() {
+            @Override
+            public void onSelected(BaseSearchDialogCompat dialog, AirportModel item, int position) {
+                // If filtering is enabled, [position] is the index of the item in the filtered result, not in the unfiltered source
+                button.setText(item.getIATA());
+                dialog.dismiss();
+            }
+        }).show();
+
+
+    }
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
+
 }
