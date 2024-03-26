@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -61,4 +62,9 @@ dependencies {
 
     //implementation("com.duffel:duffel-api:1.1.9")
     implementation("com.android.volley:volley:1.2.1")
+
+    implementation("com.github.mirrajabi:search-dialog:1.2.4")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
 }

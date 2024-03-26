@@ -30,8 +30,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.nameText.setText(items.get(position).getName());
         holder.priceText.setText(items.get(position).getTotal_amount());
         holder.currencyText.setText(items.get(position).getBase_currency());
-        holder.aircraftText.setText(items.get(position).getAircraft_name());
+        holder.timeText.setText((items.get(position).getDepart_time()) + " - " + ((items.get(position).getArrive_time())));
         holder.originText.setText(items.get(position).getOrigin_name());
+        holder.durationText.setText(items.get(position).getDuration());
+
     }
 
     @Override

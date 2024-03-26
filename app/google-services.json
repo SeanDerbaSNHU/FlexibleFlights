@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "850634947033",
+    "project_id": "flexibleflights",
+    "storage_bucket": "flexibleflights.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850634947033:android:dfbff691144119504b01c8",
+        "android_client_info": {
+          "package_name": "com.example.flexibleflights"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUekZNU_BDTZ5ZDYZwnE5-WLkoa-EF1IY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

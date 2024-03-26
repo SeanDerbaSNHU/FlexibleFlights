@@ -11,15 +11,17 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView priceText;
     TextView currencyText;
     TextView nameText;
-    TextView aircraftText;
+    TextView timeText;
     TextView originText;
+    TextView durationText;
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
         priceText = itemView.findViewById(R.id.priceText);
         currencyText = itemView.findViewById(R.id.currencyTextView);
         nameText = itemView.findViewById(R.id.nameTextView);
-        aircraftText = itemView.findViewById(R.id.aircraftTextView);
+        timeText = itemView.findViewById(R.id.timeTextView);
         originText = itemView.findViewById(R.id.originTextView);
+        durationText = itemView.findViewById(R.id.durationTextView);
     }
 }

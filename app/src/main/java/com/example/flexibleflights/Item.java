@@ -1,5 +1,10 @@
 package com.example.flexibleflights;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Item {
     String total_amount; //Price
     String base_currency; //USD, GBP, EURO, etc
@@ -8,6 +13,38 @@ public class Item {
     String aircraft_name; //Name of the aircraft ex. Airbus Industries A380
     String destination_name;
     String origin_name;
+
+    public String getDepart_time() {
+        return depart_time;
+    }
+
+    public void setDepart_time(String depart_time) {
+        this.depart_time = formatDate(depart_time);
+    }
+
+    String depart_time;
+
+    public String getArrive_time() {
+        return arrive_time;
+    }
+
+    public void setArrive_time(String arrive_time) {
+        this.arrive_time = formatDate(arrive_time);
+    }
+
+    String arrive_time;
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        //this.duration = formatTime(duration);
+        String time = duration.substring(2);
+        this.duration = time;
+    }
+
+    String duration;
 
     public String getTotal_amount() {
         return total_amount;
@@ -66,4 +103,33 @@ public class Item {
         this.origin_name = sample;
     }
 
+    private String formatDate(String d){
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        String time = "";
+        String hour = d.substring(11, 13);
+        String minute = d.substring(13, 16);
+        int int_hour = Integer.parseInt(hour);
+        if(int_hour > 12){time = (int_hour - 12) + minute + " PM";}
+        else if (int_hour == 12){time = hour + minute + " PM";}
+        else{time = hour + minute + " AM";}
+        /*try {
+            Date date = dateFormat.parse(time);
+            date_s = date.toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }*/
+        return time;
+    }
+
+    private String formatTime(String t){
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        String time = "";
+        try {
+            Date date = dateFormat.parse(t);
+            time = date.toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return time;
+    }
 }

@@ -26,8 +26,7 @@
         android:layout_marginTop="20dp"
         android:text="1234"
         android:textColor="#000000"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/currencyTextView"
@@ -49,27 +48,41 @@
         android:layout_marginStart="13dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/currencyTextView"
-        android:text="AirlineName" />
+        android:text="AirlineName"
+        android:textColor="#000000" />
 
     <TextView
-        android:id="@+id/aircraftTextView"
+        android:id="@+id/timeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nameTextView"
-        android:layout_marginStart="13dp"
+        android:layout_alignStart="@+id/nameTextView"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_toEndOf="@+id/currencyTextView"
-        android:text="Aircraft" />
+        android:text="Time"
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/originTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="261dp"
-        android:layout_marginTop="25dp"
-        android:text="Dallas to Boston" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="31dp"
+        android:text="Dallas to Boston"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/durationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/originTextView"
+        android:layout_alignStart="@+id/originTextView"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp"
+        android:text="Duration"
+        android:textColor="#000000" />
 
 </RelativeLayout>
