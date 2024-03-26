@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -17,6 +18,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.flexibleflights.databinding.ActivityRegisterBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +32,7 @@ import java.util.HashMap;
 public class RegisterActivity extends AppCompatActivity {
 
     private ActivityRegisterBinding binding;
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +45,10 @@ public class RegisterActivity extends AppCompatActivity {
         final EditText passwordEditText = binding.passwordEditText;
         final Button registerButton = binding.registerButton;
         final TextView returnText = binding.returnTextView;
+
+        // ...
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
         //
         //Establishing Node.js server connection
@@ -56,9 +67,22 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = usernameEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
-                register((url + "/register"), username, password);
+                String email = String.valueOf(usernameEditText.getText());
+                String password = String.valueOf(passwordEditText.getText());
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) { // Did we find a matching account?
+                            // Successful Register
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            startActivity(new Intent(RegisterActivity.this, MainActivity.class)); // Run main feed
+
+                        }
+                        else{ // Unsuccessful register
+                            Toast.makeText(RegisterActivity.this, "Failed to register", Toast.LENGTH_LONG).show(); // Error, invalid login.
+                        }
+                    }
+                });
             }
         });
     }
