@@ -69,14 +69,15 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = String.valueOf(usernameEditText.getText());
                 String password = String.valueOf(passwordEditText.getText());
+                Toast.makeText(RegisterActivity.this, "Attempting to register.....", Toast.LENGTH_LONG).show();
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) { // Did we find a matching account?
                             // Successful Register
+                            Toast.makeText(RegisterActivity.this, "Success!", Toast.LENGTH_LONG).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             startActivity(new Intent(RegisterActivity.this, MainActivity.class)); // Run main feed
-
                         }
                         else{ // Unsuccessful register
                             Toast.makeText(RegisterActivity.this, "Failed to register", Toast.LENGTH_LONG).show(); // Error, invalid login.

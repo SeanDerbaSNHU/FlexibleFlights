@@ -70,17 +70,19 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = String.valueOf(usernameEditText.getText());
                 String password = String.valueOf(passwordEditText.getText());
+                Toast.makeText(getApplicationContext(), "Attempting login...", Toast.LENGTH_LONG).show();
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) { // Did we find a matching account?
-                            // Successful Register
+                            // Successful Login
+                            Toast.makeText(getApplicationContext(), "Signed in!", Toast.LENGTH_LONG).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class)); // Run main feed
 
                         }
-                        else{ // Unsuccessful register
-                            Toast.makeText(LoginActivity.this, "Failed to register", Toast.LENGTH_LONG).show(); // Error, invalid login.
+                        else{ // Unsuccessful login
+                            Toast.makeText(LoginActivity.this, "Failed to login", Toast.LENGTH_LONG).show(); // Error, invalid login.
                         }
                     }
                 });
