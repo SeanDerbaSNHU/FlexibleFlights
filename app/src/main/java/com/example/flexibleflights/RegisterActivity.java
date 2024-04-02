@@ -53,9 +53,9 @@ public class RegisterActivity extends AppCompatActivity {
         //
         //Establishing Node.js server connection
         //
-        final RequestQueue queue = Volley.newRequestQueue(this);
+        //final RequestQueue queue = Volley.newRequestQueue(this);
         final String url = "http://54.163.192.205:3000";                     //TODO Make sure url is matching EC2 instance ip, it may change on reboot
-        queue.start();
+        //queue.start();
 
         returnText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     public void register(String url, String username, String password){
-        RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
+        //RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("username", username);
         params.put("password", password);
@@ -112,7 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error registering", Toast.LENGTH_SHORT).show();
             }
         });
-        queue.add(jsonObjectRequest);
+        //queue.add(jsonObjectRequest);
     }
 
     private void authenticateRegister(String message){

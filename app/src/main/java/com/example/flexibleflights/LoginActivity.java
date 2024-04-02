@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText usernameEditText = binding.emailEditText;
         final EditText passwordEditText = binding.passwordEditText;
         final Button loginButton = binding.loginButton;
-        final ProgressBar loadingProgressBar = binding.loading;
+        //final ProgressBar loadingProgressBar = binding.loading;
         final TextView guestLoginText = binding.guestLoginTextView;
         final TextView registerText = binding.returnTextView;
 
@@ -115,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
     public void login(String url, String username, String password){
-        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+        //RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("username", username);
         params.put("password", password);
@@ -142,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Error logging in", Toast.LENGTH_SHORT).show();
             }
         });
-        queue.add(jsonObjectRequest);
+        //queue.add(jsonObjectRequest);
     }
     public void authenticateLogin(String message){
         //TODO: check response from server and log user in
