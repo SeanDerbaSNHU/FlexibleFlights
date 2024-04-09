@@ -31,7 +31,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.priceText.setText(items.get(position).getTotal_amount());
         holder.currencyText.setText(items.get(position).getBase_currency());
         holder.timeText.setText((items.get(position).getDepart_time()) + " - " + ((items.get(position).getArrive_time())));
-        holder.originText.setText(items.get(position).getOrigin_name());
+        holder.originText.setText(items.get(position).getOrigin_name() + " -> " + items.get(position).getDestination_name());
         holder.durationText.setText(items.get(position).getDuration());
 
     }
