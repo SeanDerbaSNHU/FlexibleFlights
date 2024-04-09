@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,7 @@ import com.example.flexibleflights.AirportModel;
 import com.example.flexibleflights.Item;
 import com.example.flexibleflights.MyAdapter;
 import com.example.flexibleflights.R;
+import com.example.flexibleflights.UserSingleton;
 import com.example.flexibleflights.databinding.FragmentDashboardBinding;
 
 import org.json.JSONArray;
@@ -78,7 +80,24 @@ public class DashboardFragment extends Fragment {
         //items = makeDummyList();
         RecyclerView recyclerView = root.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new MyAdapter(items));
+        MyAdapter myAdapter = new MyAdapter(items);
+        recyclerView.setAdapter(myAdapter);
+
+        myAdapter.setOnClickListener(new MyAdapter.OnClickListener() {
+            public void onClick(int position, Item model) {
+                //Do something when item is clicked
+                AlertDialog dialog = new AlertDialog.Builder(root.getContext())
+                        .setTitle("Save offer?")
+                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                model.saveToDB(UserSingleton.getInstance().getEmail());
+                                Toast.makeText(root.getContext(), "Offer saved!", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null).create();
+                dialog.show();
+            }
+        });
 
 
         date.setOnClickListener(new View.OnClickListener() {
@@ -230,6 +249,8 @@ public class DashboardFragment extends Fragment {
                 }
             }
         });
+
+
 
         return root;
     }

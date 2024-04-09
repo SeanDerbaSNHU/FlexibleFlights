@@ -12,22 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.flexibleflights.databinding.ActivityRegisterBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -41,14 +43,17 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setContentView(R.layout.activity_register);
 
-        final EditText usernameEditText = binding.emailEditText;
-        final EditText passwordEditText = binding.passwordEditText;
-        final Button registerButton = binding.registerButton;
-        final TextView returnText = binding.returnTextView;
+        final EditText usernameEditText = findViewById(R.id.emailEditText);
+        final EditText passwordEditText = findViewById(R.id.passwordEditText);
+        final Button registerButton = findViewById(R.id.registerButton);
+        final TextView returnText = findViewById(R.id.returnTextView);
+
+        UserSingleton var = UserSingleton.getInstance();
 
         // ...
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         //
         //Establishing Node.js server connection
@@ -67,9 +72,9 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = String.valueOf(usernameEditText.getText());
-                String password = String.valueOf(passwordEditText.getText());
-                Toast.makeText(RegisterActivity.this, "Attempting to register.....", Toast.LENGTH_LONG).show();
+                String email = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                Toast.makeText(RegisterActivity.this, ("Registering..."), Toast.LENGTH_LONG).show();
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -77,6 +82,8 @@ public class RegisterActivity extends AppCompatActivity {
                             // Successful Register
                             Toast.makeText(RegisterActivity.this, "Success!", Toast.LENGTH_LONG).show();
                             FirebaseUser user = mAuth.getCurrentUser();
+                            addUserToDB(email, db);
+                            var.setEmail(email);
                             startActivity(new Intent(RegisterActivity.this, MainActivity.class)); // Run main feed
                         }
                         else{ // Unsuccessful register
@@ -126,5 +133,15 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Error Registering", Toast.LENGTH_SHORT).show();
         }
+    }
+    public void addUserToDB(String email, FirebaseFirestore db){
+        Map<String, Object> user = new HashMap<>();
+        user.put("email", email);
+        db.collection("users").document(email).set(user, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                //It worked!!!!
+            }
+        });
     }
 }
