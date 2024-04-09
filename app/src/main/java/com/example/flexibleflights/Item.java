@@ -1,9 +1,13 @@
 package com.example.flexibleflights;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Item {
     String total_amount; //Price
@@ -13,6 +17,9 @@ public class Item {
     String aircraft_name; //Name of the aircraft ex. Airbus Industries A380
     String destination_name;
     String origin_name;
+    String arrive_time;
+    String depart_time;
+    String duration;
 
     public String getDepart_time() {
         return depart_time;
@@ -21,8 +28,10 @@ public class Item {
     public void setDepart_time(String depart_time) {
         this.depart_time = formatDate(depart_time);
     }
+    public void setDepart_time_nf(String depart_time) {
+        this.depart_time = depart_time;
+    }
 
-    String depart_time;
 
     public String getArrive_time() {
         return arrive_time;
@@ -31,8 +40,10 @@ public class Item {
     public void setArrive_time(String arrive_time) {
         this.arrive_time = formatDate(arrive_time);
     }
-
-    String arrive_time;
+    //No format
+    public void setArrive_time_nf(String arrive_time) {
+        this.arrive_time = arrive_time;
+    }
 
     public String getDuration() {
         return duration;
@@ -43,8 +54,11 @@ public class Item {
         String time = duration.substring(2);
         this.duration = time;
     }
+    public void setDuration_nf(String duration) {
+        this.duration = duration;
+    }
 
-    String duration;
+
 
     public String getTotal_amount() {
         return total_amount;
@@ -132,4 +146,23 @@ public class Item {
         }
         return time;
     }
+    public void saveToDB(String email){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> item = new HashMap<>();
+        item.put("total_amount", this.total_amount);
+        item.put("base_currency", this.base_currency);
+        item.put("name", this.name);
+        item.put("total_emissions_kg", this.total_emissions_kg);
+        item.put("aircraft_name", this.aircraft_name);
+        item.put("destination_name", this.destination_name);
+        item.put("origin_name", this.origin_name);
+        item.put("arrive_time", this.arrive_time);
+        item.put("depart_time", this.depart_time);
+        item.put("duration", this.duration);
+
+        db.collection("users").document(email).collection("SavedFlights").add(item);
+
+    }
+
 }

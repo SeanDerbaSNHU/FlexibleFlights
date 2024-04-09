@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,11 +13,9 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.flexibleflights.databinding.ActivityLoginBinding;
 import com.example.flexibleflights.ui.login.LoginViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
     private FirebaseAuth mAuth;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         // ...
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         final EditText usernameEditText = binding.emailEditText;
         final EditText passwordEditText = binding.passwordEditText;
@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         final String url = "http://54.163.192.205:3000";                     //TODO Make sure url is matching EC2 instance ip, it may change on reboot
         //queue.start();
 
-
+        UserSingleton var = UserSingleton.getInstance();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,8 +78,8 @@ public class LoginActivity extends AppCompatActivity {
                             // Successful Login
                             Toast.makeText(getApplicationContext(), "Signed in!", Toast.LENGTH_LONG).show();
                             FirebaseUser user = mAuth.getCurrentUser();
+                            var.setEmail(email);
                             startActivity(new Intent(LoginActivity.this, MainActivity.class)); // Run main feed
-
                         }
                         else{ // Unsuccessful login
                             Toast.makeText(LoginActivity.this, "Failed to login", Toast.LENGTH_LONG).show(); // Error, invalid login.
@@ -156,6 +156,8 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Error logging in", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 }
 

@@ -1,6 +1,7 @@
 package com.example.flexibleflights;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 //TODO : CHANGE FROM <Item> TO DIRECT JSON OBJECTS
 
     List<Item> items;
+    private OnClickListener onClickListener;
 
 
     public MyAdapter(List<Item> items) {
@@ -33,11 +35,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.timeText.setText((items.get(position).getDepart_time()) + " - " + ((items.get(position).getArrive_time())));
         holder.originText.setText(items.get(position).getOrigin_name() + " -> " + items.get(position).getDestination_name());
         holder.durationText.setText(items.get(position).getDuration());
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onClickListener != null) {
+                    onClickListener.onClick(position, items.get(position));
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+    public interface OnClickListener {
+        void onClick(int position, Item model);
     }
 }
