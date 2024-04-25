@@ -85,9 +85,13 @@ public class DashboardFragment extends Fragment {
 
         myAdapter.setOnClickListener(new MyAdapter.OnClickListener() {
             public void onClick(int position, Item model) {
+                String title = "Save offer?";
+                if(model.getAircraft_name().contains("Boeing")){
+                    title = "Warning: Boeing flight, still save offer?";
+                }
                 //Do something when item is clicked
                 AlertDialog dialog = new AlertDialog.Builder(root.getContext())
-                        .setTitle("Save offer?")
+                        .setTitle(title)
                         .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 model.saveToDB(UserSingleton.getInstance().getEmail());

@@ -56,4 +56,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
     public interface OnClickListener {
         void onClick(int position, Item model);
     }
+
+    public void delete(int position) {
+        items.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, items.size());
+    }
 }
